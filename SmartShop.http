@@ -1,0 +1,6 @@
+@SmartShop_HostAddress = http://localhost:5090
+
+GET {{SmartShop_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
