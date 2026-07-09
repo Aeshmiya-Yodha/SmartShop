@@ -1,5 +1,3 @@
-
-
 public class User
 {
     public int UserId {get; set; }
@@ -9,4 +7,6 @@ public class User
     public string ? Email{get; set; }
     public required string PasswordHash {get; set; }
     public  ICollection<Address> Addresses {get; set; } = new List<Address>() ;
+    //connection with the Cart
+    public int CartId {get; set;}
 }

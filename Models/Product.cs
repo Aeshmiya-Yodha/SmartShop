@@ -10,5 +10,6 @@ public class Product
     public string ? ImageUrl { get; set;}
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
     public  ProductCategory  ProductCategory {get; set;} = null! ;
+    public ICollection<CartItem> CartItems {get;set;} = new List<CartItem>();
 
 }
