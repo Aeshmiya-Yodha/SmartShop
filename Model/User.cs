@@ -1,6 +1,4 @@
 
-using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.Options;
 
 public class User
 {
@@ -10,5 +8,5 @@ public class User
     public required string ContactNumber {get; set;} // authentication will be handled by the Contact number or Password
     public string ? Email{get; set; }
     public required string PasswordHash {get; set; }
-    public required ICollection<Address> Addresses {get; set; }
+    public  ICollection<Address> Addresses {get; set; } = new List<Address>() ;
 }
