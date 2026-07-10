@@ -30,3 +30,7 @@ else
 
 // app.UseAuthentication();
 // app.UseAuthorization();
+
+app.UseRouting();
+app.MapControllers();
+app.Run();
