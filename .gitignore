@@ -10,3 +10,5 @@ obj/
 appsettings.Development.json
 
 .env
+
+Migrations/
