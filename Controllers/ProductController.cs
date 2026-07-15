@@ -4,8 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 public class ProductController : ControllerBase
 {
     [HttpGet]
-    public ActionResult GetProduct([FromQuery] string ProductCategory , [FromQuery] int id , [FromQuery] string ProductName )
+    public ActionResult GetProduct([FromQuery] string ProductCategory , [FromQuery] string ProductName )
     {
        return Ok("Success!");
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult GetProductbyId([FromRoute] int id )
+    {
+        return Ok("Success");
     }
 }
