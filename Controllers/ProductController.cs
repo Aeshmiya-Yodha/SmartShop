@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 public class ProductController : ControllerBase
 {
     [HttpGet]
-    public ActionResult GetProduct([FromQuery] string ProductCategory , [FromQuery] string ProductName )
+    public ActionResult GetProduct([FromQuery] string  ProductCategory , [FromQuery] string ProductName )
     {
-       return Ok("Success!");
+       return Ok();
     }
 
     [HttpGet("{id}")]
