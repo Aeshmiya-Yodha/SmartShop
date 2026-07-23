@@ -3,17 +3,64 @@ using Microsoft.AspNetCore.Mvc;
 [Route("Product")]
 public class ProductController : ControllerBase
 {
-    [HttpGet("{id}")]
-    public async Task<ActionResult> GetProductByID ([FromRoute] int id)
+
+    private readonly AppDbContext _context;
+
+    public ProductController(AppDbContext context)
     {
-         await Task.Delay(500);
-         return Ok("Success");
+        _context = context;
     }
-    
-    [HttpGet]
-    public async Task<ActionResult> GetProduct([FromQuery] string ProductCategory ,  [FromQuery] string ProductName )
+
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<List<Product>>> GetProductByID([FromRoute] int id, [FromQuery] string ProductCategory, [FromQuery] string ProductName)
     {
-       await Task.Delay(500);
-       return Ok("Success!");
+        IEnumerable<Product> ProductsById = _context.Products.Where(p => p.ProductId == id);
+        List<Product> Products = new List<Product>();
+        if (string.IsNullOrEmpty(ProductCategory))
+        {
+            if (string.IsNullOrEmpty(ProductName))
+            {
+                Products = ProductsById.ToList();
+            }
+            else
+            {
+                Products = ProductsById.Where(p => p.ProductName == ProductName).ToList();
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(ProductName))
+            {
+            
+                int categoryId = _context.ProductCategories
+                    .Where(category => category.ProductCategoryName == ProductCategory)
+                    .Select(category => category.ProductCategoryId)
+                    .FirstOrDefault();
+
+                Products = ProductsById.Where(product => product.ProductCategoryId == categoryId).ToList();
+            }
+            else
+            {
+                //Join Operations on Product Category 
+                int categoryId = _context.ProductCategories
+                    .Where(category => category.ProductCategoryName == ProductCategory)
+                    .Select(category => category.ProductCategoryId)
+                    .FirstOrDefault();
+
+                Products = ProductsById.Where(product => product.ProductCategoryId == categoryId  && product.ProductName == ProductName).ToList();
+            }
+        }
+        return Ok(Products);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<Product>>> GetProduct([FromQuery] string ProductCategory, [FromQuery] string ProductName)
+    {
+        IEnumerable<Product> AllProducts = _context.Products.ToList();
+        
+        List<Product> products = new List<Product>();
+        return products; 
+
     }
 }
