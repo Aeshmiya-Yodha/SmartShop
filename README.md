@@ -12,9 +12,9 @@ The project is being built version by version. The current focus is getting the 
 
 ## Why This Project Exists
 
-This project is my hands-on backend learning project. The goal is to understand how real APIs are structured, how Entity Framework Core maps C# models to database tables, and how controllers should handle common backend workflows like filtering, creating, updating, and deleting data.
+SmartShop is a backend project focused on building a well-structured e-commerce API. It demonstrates how real APIs are organized, how Entity Framework Core maps C# models to database tables, and how controllers handle common backend workflows like filtering, creating, updating, and deleting data.
 
-The project is also being managed with GitHub Issues and a GitHub Project board to follow a professional development workflow.
+The project is managed with GitHub Issues and a GitHub Project board to follow a professional development workflow.
 
 ## Tech Stack
 
@@ -89,28 +89,19 @@ The project is being improved in layers.
 | v6 | Add authentication and authorization |
 | v7 | Add tests and deployment readiness |
 
-## Important Learning Notes
+## Design Decisions
 
-One important improvement made in the Product API was switching product filtering from `IEnumerable<Product>` to `IQueryable<Product>`.
-
-The simple idea:
-
-```text
-IEnumerable: fetch items, then filter in C# memory
-IQueryable: build SQL query first, then database filters before sending data
-```
-
-For database filtering, the better pattern is:
+Product filtering is built on `IQueryable<Product>` so that filters translate to SQL and run on the database side, instead of loading every row into memory and filtering in C#:
 
 ```csharp
 IQueryable<Product> query = _context.Products;
 
-// Add filters here
+// Conditional filters are composed here
 
 List<Product> products = await query.ToListAsync();
 ```
 
-This keeps filtering on the database side and avoids loading unnecessary rows into application memory.
+This keeps queries efficient as the dataset grows.
 
 ## Running Locally
 
@@ -155,20 +146,6 @@ Current development style:
 2. Move the issue to In Progress while coding.
 3. Commit and push after completing the work.
 4. Move the issue to Done when tested.
-
-## Current Limitations
-
-The project is still under active development.
-
-Known gaps:
-
-- Product update logic still needs field assignment and saving.
-- Delete currently performs hard delete, while soft delete is planned.
-- Pagination is not implemented yet.
-- DTOs are not added yet.
-- Validation rules are not added yet.
-- Authentication and authorization are not implemented yet.
-- Tests are not added yet.
 
 ## Repository Goal
 
