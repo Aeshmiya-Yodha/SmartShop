@@ -1,20 +1,16 @@
 ---
 title: SmartShop Backend API
-description: ASP.NET Core backend for an e-commerce system with product, user, cart, order, and address domain models.
+description: ASP.NET Core e-commerce backend API built with Entity Framework Core and PostgreSQL.
 ms.date: 2026-07-24
 ---
 
 ## SmartShop Backend API
 
-SmartShop is a backend API for an e-commerce application built with ASP.NET Core, Entity Framework Core, and PostgreSQL.
+SmartShop is a backend API for an e-commerce application built with ASP.NET Core, Entity Framework Core, and PostgreSQL. It exposes REST endpoints for managing products, categories, users, carts, orders, and addresses.
 
-The project is being built version by version. The current focus is getting the core backend entities and CRUD operations working correctly, then improving the API with cleaner response models, validation, soft delete behavior, pagination, and authentication.
+## Purpose
 
-## Why This Project Exists
-
-SmartShop is a backend project focused on building a well-structured e-commerce API. It demonstrates how real APIs are organized, how Entity Framework Core maps C# models to database tables, and how controllers handle common backend workflows like filtering, creating, updating, and deleting data.
-
-The project is managed with GitHub Issues and a GitHub Project board to follow a professional development workflow.
+SmartShop provides the server-side foundation of an online store. It models the data and relationships behind common e-commerce actions: browsing and filtering products, managing a shopping cart, placing orders, and storing customer and address details. The code is organized around clean ASP.NET Core controllers and Entity Framework Core entities backed by a PostgreSQL database.
 
 ## Tech Stack
 
@@ -25,49 +21,31 @@ The project is managed with GitHub Issues and a GitHub Project board to follow a
 | ORM | Entity Framework Core |
 | Database | PostgreSQL |
 | Provider | Npgsql.EntityFrameworkCore.PostgreSQL |
-| Project tracking | GitHub Issues + GitHub Projects |
 
 ## Domain Model
-
-SmartShop currently has these main entities:
 
 | Entity | Purpose |
 | --- | --- |
 | Product | Stores product details such as name, price, stock, category, image, and active status |
 | ProductCategory | Groups products by category |
-| User | Stores customer profile and authentication-related fields |
+| User | Stores customer profile and account details |
 | Address | Stores user delivery addresses |
 | Cart | Represents a user's shopping cart |
 | CartItem | Represents one product inside a cart |
 | Order | Represents a placed order with status and payment state |
 | OrderItem | Represents one product inside an order |
 
-## Current API Progress
-
-| Area | Status |
-| --- | --- |
-| Product API | Initial CRUD structure added |
-| Product filtering | Added filtering by product name and category |
-| Product update | In progress |
-| Product delete | Hard delete currently exists, soft delete planned |
-| User API | Planned |
-| Order API | Basic placeholder exists, CRUD planned |
-| Cart API | Planned |
-| Address API | Planned |
-
 ## Product API Endpoints
 
-Current ProductController endpoints:
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/Product` | List products, with optional filtering |
+| GET | `/Product/{id}` | Get a product by id |
+| POST | `/Product` | Create a product |
+| PUT | `/Product/{id}` | Update a product |
+| DELETE | `/Product/{id}` | Delete a product |
 
-```http
-GET    /Product
-GET    /Product/{id}
-POST   /Product
-PUT    /Product/{id}
-DELETE /Product/{id}
-```
-
-Current filtering support:
+Filtering is supported through query parameters:
 
 ```http
 GET /Product?ProductName=Phone
@@ -75,23 +53,9 @@ GET /Product?ProductCategory=Electronics
 GET /Product?ProductCategory=Electronics&ProductName=Phone
 ```
 
-## Development Roadmap
+## Design Notes
 
-The project is being improved in layers.
-
-| Version | Focus |
-| --- | --- |
-| v1 | Complete basic CRUD operations for the main controllers |
-| v2 | Add soft delete and hard delete behavior |
-| v3 | Add pagination, filtering, sorting, and search |
-| v4 | Improve status codes and response shape |
-| v5 | Add DTOs and validation |
-| v6 | Add authentication and authorization |
-| v7 | Add tests and deployment readiness |
-
-## Design Decisions
-
-Product filtering is built on `IQueryable<Product>` so that filters translate to SQL and run on the database side, instead of loading every row into memory and filtering in C#:
+Product queries are built on `IQueryable<Product>` so that filters translate to SQL and run on the database side, instead of loading every row into memory and filtering in C#:
 
 ```csharp
 IQueryable<Product> query = _context.Products;
@@ -103,58 +67,52 @@ List<Product> products = await query.ToListAsync();
 
 This keeps queries efficient as the dataset grows.
 
-## Running Locally
+## Getting Started
 
-Prerequisites:
+### Prerequisites
 
-- .NET SDK installed
-- PostgreSQL installed or available remotely
-- A valid `DefaultConnection` connection string configured through user secrets or configuration
+- .NET SDK
+- PostgreSQL (local or remote)
 
-Restore dependencies:
+### 1. Configure the database connection
+
+The API reads a connection string named `DefaultConnection`. Store it with user secrets so it stays out of source control:
+
+```bash
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=smartshop;Username=postgres;Password=your_password"
+```
+
+### 2. Restore dependencies
 
 ```bash
 dotnet restore
 ```
 
-Run the API:
+### 3. Create the database schema
+
+If the EF Core tools are not installed yet:
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+Generate the initial migration and apply it to the database:
+
+```bash
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+### 4. Run the API
 
 ```bash
 dotnet run
 ```
 
-The API can be tested using:
+## Testing the API
 
-- `SmartShop.http`
-- Postman
-- Thunder Client
-- Browser for simple GET endpoints
+With the API running, call the endpoints using any of these:
 
-## Project Management
-
-This repo uses GitHub Issues and a GitHub Project board to track work.
-
-Board flow:
-
-```text
-Backlog -> Ready -> In Progress -> Done
-```
-
-Current development style:
-
-1. Create an issue for each feature or improvement.
-2. Move the issue to In Progress while coding.
-3. Commit and push after completing the work.
-4. Move the issue to Done when tested.
-
-## Repository Goal
-
-The goal is to grow SmartShop into a clean backend project that demonstrates:
-
-- ASP.NET Core controller design
-- Entity Framework Core relationships
-- PostgreSQL-backed API development
-- CRUD workflows
-- Query filtering and pagination
-- Professional issue tracking
-- Gradual backend improvement through versions
+- `SmartShop.http` in the repository
+- Postman or Thunder Client
+- A browser for simple GET requests
